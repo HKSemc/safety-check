@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>安否確認</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+body { text-align:center; font-family:sans-serif; }
+button {
+font-size:20px;
+padding:15px;
+margin:10px;
+width:80%;
+}
+</style>
+</head>
+<body>
+
+<h2>安否確認</h2>
+<p id="status">読み込み中...お待ちください</p>
+
+<div id="userForm" style="display:none;">
+<input id="name" placeholder="氏名 (例:北陸太郎)"><br><br>
+<input id="company" placeholder="会社名 (例:北陸航測)"><br><br>
+<input id="phone" type="tel" inputmode="numeric" placeholder="電話番号 例:(09012345678)"><br><br>
+<button onclick="registerUser()">登録</button>
+</div>
+
+<button onclick="sendStatus('無事')">無事</button>
+<button onclick="sendStatus('要支援')">要支援</button>
+
+<script>
+const LIFF_ID = "2009951749-CNk6Mpsz";
+//下記URLはGASデプロイするたびに更新要→netlifyからGAShtmlに移行したので不要
+//const API_URL = "https://script.google.com/macros/s/AKfycby8WIQFgbGjm4Rlpu_YSaYfdie7Cxbn3t8c2y_Kas1C52lyK-e4b8UB6UmzhjUaYTLmzQ/exec";
+
+//const GAS_URL = location.origin + location.pathname;
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyXrNBJ454TgZxqMYOFJprXkcdlTBLbPj5rToGYeS4trZbO9flRIsVrnmA2F3Ipa-Mk1w/exec";
+
+let userId = null;
+
+async function init() {
+  try {
+
+    //  ① init開始
+    document.getElementById("status").innerText = "① init開始";
+
+    //  ② LIFF初期化
+    //document.getElementById("status").innerText = "② LIFF初期化";
+    document.getElementById("status").innerText =
+  "② LIFF初期化前 / liff存在：" + (typeof liff);
+  setTimeout(() => {
+  document.getElementById("status").innerText +=
+    "\n（3秒経過：init応答なし）";
+}, 3000);
+    await liff.init({
+  liffId: LIFF_ID,
+  withLoginOnExternalBrowser: true
+});
+
+    //  ③ ログイン確認
+    document.getElementById("status").innerText = "③ ログイン確認";
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+
+    //  ④ プロフィール取得
+    document.getElementById("status").innerText = "④ プロフィール取得";
+    const profile = await liff.getProfile();
+
+    //  ⑤ userId取得
+    document.getElementById("status").innerText = "⑤ userId取得";
+    userId = profile.userId;
+
+    //  ⑥ GAS通信開始
+    document.getElementById("status").innerText = "⑥ GAS通信開始";
+
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyXrNBJ454TgZxqMYOFJprXkcdlTBLbPj5rToGYeS4trZbO9flRIsVrnmA2F3Ipa-Mk1w/exec";
+
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        checkUser: true,
+        userId: userId
+      })
+    });
+
+    //  ⑦ レスポンス受信
+    document.getElementById("status").innerText = "⑦ レスポンス受信";
+
+    const text = await res.text();
+
+    document.getElementById("status").innerText =
+      "⑧ 返却データ:\n" + text;
+
+    const data = JSON.parse(text);
+
+    //  ⑨ 分岐
+    if (data.exists) {
+      document.getElementById("status").innerText = "準備完了";
+    } else {
+      document.getElementById("status").innerText = "初回登録してください";
+      document.getElementById("userForm").style.display = "block";
+    }
+
+  } catch (err) {
+    document.getElementById("status").innerText =
+      "エラー：" + err.message;
+  }
+}
+
+//実行
+init();
+</script>
+
+</body>
+</html>
