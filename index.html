@@ -91,28 +91,12 @@ const res = await fetch(GAS_URL, {
 });
     
     const data = await res.json();
-    
-    //const res = await fetch(GAS_URL, {
-    //  method: "POST",
-    //  headers: {
-    //    "Content-Type": "application/json"
-    //  },
-    //  body: JSON.stringify({
-    //    checkUser: true,
-    //    userId: userId
-    //  }),
-    //  redirect: "follow"
-    //});
-
-    //const text = await res.text();
 
     //  ⑦ レスポンス受信
     document.getElementById("status").innerText = "⑦ レスポンス受信";
     
     document.getElementById("status").innerText =
       "⑧ 返却データ:\n" + text;
-
-    const data = JSON.parse(text);
 
     //  ⑨ 分岐
     if (data.exists) {
