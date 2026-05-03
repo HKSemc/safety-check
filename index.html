@@ -90,10 +90,10 @@ const res = await fetch(GAS_URL, {
   redirect: "follow"
 });
     
-    const data = await res.json();
-
     //  ⑦ レスポンス受信
     document.getElementById("status").innerText = "⑦ レスポンス受信";
+
+    const data = await res.json();
     
     document.getElementById("status").innerText =
       "⑧ 返却データ:\n" + text;
