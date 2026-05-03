@@ -79,7 +79,11 @@ async function init() {
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyXrNBJ454TgZxqMYOFJprXkcdlTBLbPj5rToGYeS4trZbO9flRIsVrnmA2F3Ipa-Mk1w/exec";
 
     const res = await fetch(
-      GAS_URL + "?userId=" + userId
+      GAS_URL + "?userId=" + userId,
+      {
+        method: "GET",
+        mode: "no-cors"
+      }
     );
 
     const data = await res.json();
