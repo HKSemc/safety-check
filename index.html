@@ -86,7 +86,8 @@ const res = await fetch(GAS_URL, {
   body: JSON.stringify({
     checkUser: true,
     userId: userId
-  })
+  }),
+  redirect: "follow"
 });
     
     const data = await res.json();
