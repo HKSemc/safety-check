@@ -78,14 +78,17 @@ async function init() {
 
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyXrNBJ454TgZxqMYOFJprXkcdlTBLbPj5rToGYeS4trZbO9flRIsVrnmA2F3Ipa-Mk1w/exec";
 
-    const res = await fetch(
-      GAS_URL + "?userId=" + userId,
-      {
-        method: "GET",
-        mode: "no-cors"
-      }
-    );
-
+const res = await fetch(GAS_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    checkUser: true,
+    userId: userId
+  })
+});
+    
     const data = await res.json();
     
     //const res = await fetch(GAS_URL, {
@@ -100,11 +103,11 @@ async function init() {
     //  redirect: "follow"
     //});
 
-    //  ⑦ レスポンス受信
-    document.getElementById("status").innerText = "⑦ レスポンス受信";
-
     const text = await res.text();
 
+    //  ⑦ レスポンス受信
+    document.getElementById("status").innerText = "⑦ レスポンス受信";
+    
     document.getElementById("status").innerText =
       "⑧ 返却データ:\n" + text;
 
