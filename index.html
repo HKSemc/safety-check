@@ -78,16 +78,13 @@ async function init() {
 
 //    const GAS_URL = "https://script.google.com/macros/s/AKfycbyXrNBJ454TgZxqMYOFJprXkcdlTBLbPj5rToGYeS4trZbO9flRIsVrnmA2F3Ipa-Mk1w/exec";
 
+const params = new URLSearchParams();
+params.append("checkUser", "true");
+params.append("userId", userId);
+
 const res = await fetch(GAS_URL, {
   method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    checkUser: true,
-    userId: userId
-  }),
-  redirect: "follow"
+  body: params
 });
     
     //  ⑦ レスポンス受信
