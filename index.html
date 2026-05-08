@@ -110,6 +110,83 @@ const res = await fetch(GAS_URL, {
   }
 }
 
+async function sendStatus(status) {
+
+  try {
+
+    document.getElementById("status").innerText =
+      "送信中...";
+
+    const params = new URLSearchParams();
+
+    params.append("userId", userId);
+    params.append("status", status);
+
+    // campaignId がある場合
+    const urlParams = new URLSearchParams(location.search);
+    const campaignId = urlParams.get("campaignId");
+
+    if (campaignId) {
+      params.append("campaignId", campaignId);
+    }
+
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: params
+    });
+
+    const data = await res.json();
+
+    document.getElementById("status").innerText =
+      "送信完了：" + status;
+
+  } catch(err) {
+
+    document.getElementById("status").innerText =
+      "送信失敗：" + err.message;
+  }
+}  
+
+async function registerUser() {
+
+  try {
+
+    const name =
+      document.getElementById("name").value;
+
+    const company =
+      document.getElementById("company").value;
+
+    const phone =
+      document.getElementById("phone").value;
+
+    const params = new URLSearchParams();
+
+    params.append("userId", userId);
+    params.append("name", name);
+    params.append("company", company);
+    params.append("phone", phone);
+
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: params
+    });
+
+    const data = await res.json();
+
+    document.getElementById("status").innerText =
+      "登録完了";
+
+    document.getElementById("userForm").style.display =
+      "none";
+
+  } catch(err) {
+
+    document.getElementById("status").innerText =
+      "登録失敗：" + err.message;
+  }
+}
+  
 //実行
 init();
 </script>
